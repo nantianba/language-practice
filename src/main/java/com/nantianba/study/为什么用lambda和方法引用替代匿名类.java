@@ -8,37 +8,40 @@ public class 为什么用lambda和方法引用替代匿名类 {
 
     public static void main(String[] args) {
         A a = new A();
-        new Thread(new Runnable() {
+        Runnable anonymousClass = new Runnable() {
             @Override
             public void run() {
-                a.getByAnonymousClass();
+                a.get();
             }
-        });
-        new Thread(() -> a.getByLambda());
-        new Thread(a::getByMethidRef);
+        };
 
-        var resourcePath = A.class.getResource("").getPath();
+        Runnable lambda = () -> a.get();
+        Runnable methodReference = a::get;
 
-        File classDir = new File(resourcePath);
+        System.out.println("anonymousClass.getClass() = " + anonymousClass.getClass());
+        System.out.println("lambda.getClass() = " + lambda.getClass());
+        System.out.println("methodReference.getClass() = " + methodReference.getClass());
 
+        var pathOfThisClass = A.class.getResource("").getPath();
+
+        File classDir = new File(pathOfThisClass);
+
+        System.out.println();
         System.out.println("All classes created by this class:");
+        System.out.println();
         Arrays.stream(classDir.list())
-                .filter(s -> s.startsWith(THIS_CLASS_NAME))
+                .filter(s -> createdByThisClass(s))
                 .forEach(System.out::println);
 
     }
 
+    private static boolean createdByThisClass(String s) {
+        return s.startsWith(THIS_CLASS_NAME);
+    }
+
     static class A {
-        int getByMethidRef() {
-            return 1;
-        }
-
-        int getByLambda() {
-            return 2;
-        }
-
-        int getByAnonymousClass() {
-            return 3;
+        int get() {
+            return 0;
         }
     }
 }
