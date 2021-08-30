@@ -20,6 +20,5 @@ public class MethodLambda {
         int getA() {
             return 0;
         }
-
     }
 }
