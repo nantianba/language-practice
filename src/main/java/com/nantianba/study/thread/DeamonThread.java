@@ -1,4 +1,4 @@
-package com.nantianba.study;
+package com.nantianba.study.thread;
 
 import java.util.Arrays;
 
