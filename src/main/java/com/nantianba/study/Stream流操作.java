@@ -5,6 +5,7 @@ import com.nantianba.study.util.ClassRunnerUtils;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.*;
 
@@ -13,7 +14,6 @@ public class Stream流操作 {
     public static void main(String[] args) {
         ClassRunnerUtils.run(Stream流操作.class);
     }
-
     private static void collect() {
         final Map<Boolean, List<Integer>> partitioningByMap = Stream.of(1, 2, 3).mapToInt(Integer::intValue)
                 .boxed()
