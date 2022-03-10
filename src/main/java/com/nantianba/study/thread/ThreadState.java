@@ -1,5 +1,8 @@
 package com.nantianba.study.thread;
 
+import java.io.IOException;
+import java.io.PipedOutputStream;
+import java.nio.channels.Pipe;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -7,13 +10,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ThreadState {
     final static Object syncLock = new Object();
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         final CountDownLatch latch = new CountDownLatch(1);
         AtomicBoolean lock = new AtomicBoolean();
+
+        final Pipe pipe = Pipe.open();
+
+        final Pipe.SinkChannel sink = pipe.sink();
+        final Pipe.SourceChannel source = pipe.source();
 
 
 
         final Thread thread = new Thread(() -> {
+
             synchronized (syncLock) {
                 System.out.println(Thread.currentThread().getState());
 
