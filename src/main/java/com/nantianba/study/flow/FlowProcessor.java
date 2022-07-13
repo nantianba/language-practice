@@ -26,11 +26,13 @@ class FlowProcessor extends SubmissionPublisher<String> implements Flow.Processo
     @Override
     public void onError(Throwable throwable) {
         Logger.println("Processor 数据接收出现异常，error :" + throwable.getMessage());
+        this.closeExceptionally(throwable);
         this.subscription.cancel();
     }
 
     @Override
     public void onComplete() {
         Logger.println("Processor 数据处理完成");
+        this.close();
     }
 }

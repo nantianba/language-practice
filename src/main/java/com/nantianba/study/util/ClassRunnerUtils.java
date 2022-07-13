@@ -33,5 +33,7 @@ public class ClassRunnerUtils {
 
             System.out.println();
         }
+
+        Logger.flush();
     }
 }

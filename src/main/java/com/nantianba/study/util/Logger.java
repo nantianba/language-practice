@@ -11,4 +11,8 @@ public class Logger {
     public static void println(String content) {
         System.out.println(Thread.currentThread().getName() + "\t" + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "\t" + content);
     }
+
+    public static void flush() {
+        System.out.flush();
+    }
 }
