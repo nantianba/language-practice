@@ -1,7 +1,5 @@
 package com.nantianba.study.thread;
 
-import io.reactivex.internal.operators.single.SingleDelayWithCompletable;
-
 import java.util.Arrays;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
