@@ -14,11 +14,14 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 /**
- * Benchmark                     Mode  Cnt          Score          Error  Units
- * MethodHanleJmh.lambda        thrpt    3  255052284.436 ±  5939016.607  ops/s
- * MethodHanleJmh.methodHandle  thrpt    3    1423480.358 ±    97809.205  ops/s
- * MethodHanleJmh.quick         thrpt    3  256389216.117 ± 17274101.160  ops/s
- * MethodHanleJmh.reflection    thrpt    3   22018184.487 ± 53689257.394  ops/s
+ Benchmark                               Mode  Cnt          Score           Error  Units
+ MethodHanleJmh.cachedMethodHandle      thrpt    3   20421446.371 ±  23650081.529  ops/s
+ MethodHanleJmh.cachedMethodMoreHandle  thrpt    3  172731114.494 ±  20176348.353  ops/s
+ MethodHanleJmh.cachedReflection        thrpt    3  174845608.763 ±  67199073.378  ops/s
+ MethodHanleJmh.lambda                  thrpt    3  251940569.498 ± 125335672.103  ops/s
+ MethodHanleJmh.methodHandle            thrpt    3    1131644.005 ±   3181816.692  ops/s
+ MethodHanleJmh.quick                   thrpt    3  239122722.703 ± 218380758.021  ops/s
+ MethodHanleJmh.reflection              thrpt    3   21958718.575 ±   5285624.573  ops/s
  */
 @BenchmarkMode(Mode.Throughput)
 @Warmup(iterations = 3, time = 1)
@@ -27,6 +30,7 @@ import java.util.concurrent.Callable;
 @Fork(1)
 @State(value = Scope.Benchmark)
 public class MethodHanleJmh {
+
     public static void main(String[] args) throws RunnerException {
         new Runner(new OptionsBuilder()
                 .include("MethodHanleJmh")
@@ -34,7 +38,7 @@ public class MethodHanleJmh {
                 .run();
     }
 
-    B son = new B();
+    static B son = new B();
 
     @Benchmark
     public void methodHandle(Blackhole blackhole) throws Throwable {
@@ -49,12 +53,79 @@ public class MethodHanleJmh {
         int o = (int) hello.invokeExact();
         return o;
     }
+    @Benchmark
+    public void cachedMethodHandle(Blackhole blackhole) throws Throwable {
+        int o = getO2();
+
+        blackhole.consume(o);
+    }
+    static MethodHandle helloMethodHandles;
+
+    static {
+        try {
+            helloMethodHandles = MethodHandles.lookup().findVirtual(B.class, "hello", MethodType.methodType(int.class));
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private int getO2() throws Throwable {
+        int o = (int) helloMethodHandles.bindTo(son).invokeExact();
+        return o;
+    }
+    @Benchmark
+    public void cachedMethodMoreHandle(Blackhole blackhole) throws Throwable {
+        int o = getO3();
+
+        blackhole.consume(o);
+    }
+    static MethodHandle helloMethodHandles2;
+
+    static {
+        try {
+            helloMethodHandles2 = MethodHandles.lookup().findVirtual(B.class, "hello", MethodType.methodType(int.class)).bindTo(son);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private int getO3() throws Throwable {
+        int o = (int) helloMethodHandles2.invokeExact();
+        return o;
+    }
 
     @Benchmark
     public void reflection(Blackhole blackhole) throws Throwable {
         Object invoke = getObject();
 
         blackhole.consume(invoke);
+    }
+    @Benchmark
+    public void cachedReflection(Blackhole blackhole) throws Throwable {
+        Object invoke = getObject2();
+
+        blackhole.consume(invoke);
+    }
+
+    static Method helloMethod;
+
+    static {
+        try {
+            helloMethod = B.class.getMethod("hello");
+        } catch (NoSuchMethodException e) {
+
+        }
+    }
+
+    private Object getObject2() throws InvocationTargetException, IllegalAccessException {
+
+
+        Object invoke = helloMethod.invoke(son);
+        return invoke;
     }
 
     private Object getObject() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
