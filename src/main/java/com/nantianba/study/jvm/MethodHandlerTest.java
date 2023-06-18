@@ -1,7 +1,6 @@
 package com.nantianba.study.jvm;
 
 import com.nantianba.study.util.ClassRunnerUtils;
-import jdk.swing.interop.SwingInterOpUtils;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
