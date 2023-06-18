@@ -7,6 +7,7 @@ public class Stream增强 {
     public static void main(String[] args) {
         List<String> list = Stream.of("a", "b", "c")
                 .takeWhile(s -> !s.equals("b"))
+                //tolist是jdk16的新特性
                 .toList();
 
         System.out.println(list);
