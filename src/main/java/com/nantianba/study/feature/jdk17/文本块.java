@@ -15,11 +15,14 @@ public class 文本块 {
         System.out.println("block.lines().count() = " + block.lines().count());
 
         var block2 = """
-                lang: java
-                version: 13
-                dbname: mysql
-                ip:""";
+        lang: java\
+        version: 13\
+        dbname: mysql\
+        ip: 192.168.140.2\
+        usr: root\
+        pwd: 1000
+        """;
+        System.out.println("block2.lines().count() = " + block2.lines().count());
 
-        System.out.println("block2.getClass() = " + block2.getClass());
     }
 }
