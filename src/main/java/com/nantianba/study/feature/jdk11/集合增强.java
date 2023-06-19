@@ -11,14 +11,22 @@ public class 集合增强 {
         System.out.println(list);
         System.out.println(copy);
 
-        var set= Set.of("a", "b", "c");
-        var copySet= Set.copyOf(set);
+        var set = Set.of("a", "b", "c");
+        var copySet = Set.copyOf(set);
         System.out.println(set);
         System.out.println(copySet);
 
-        Map<String, Integer> map = Map.of("a", 1, "b", 2, "c", 3);
+        var map = Map.of("a", 1, "b", 2, "c", 3);
         Map<String, Integer> copyMap = Map.copyOf(map);
         System.out.println(map);
         System.out.println(copyMap);
+
+        var entries = Map.ofEntries(
+                Map.entry("a", 1),
+                Map.entry("b", 2),
+                Map.entry("c", 3)
+        );
+
+        System.out.println(entries);
     }
 }
