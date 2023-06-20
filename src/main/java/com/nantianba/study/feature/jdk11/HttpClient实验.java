@@ -20,7 +20,7 @@ public class HttpClient实验 {
         HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
 
         System.out.println("Headers");
-        resp.headers().map().forEach((k, v) -> System.out.println("\t"+k + ":" + v.get(0)));
+        resp.headers().map().forEach((k, v) -> System.out.println("\t" + k + ":" + v.get(0)));
         System.out.println("resp.version() = " + resp.version());
         System.out.println("resp.statusCode() = " + resp.statusCode());
         System.out.println("resp.body() = " + resp.body().length());
