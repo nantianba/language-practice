@@ -1,6 +1,7 @@
 package com.nantianba.study.feature.jdk11;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Stream增强 {
@@ -22,5 +23,18 @@ public class Stream增强 {
                 .toList();
 
         System.out.println(list2);
+
+        String s = Stream.iterate(0, n -> n + 3)
+                .limit(10)
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+
+        System.out.println(s);
+
+        String s1 = Stream.iterate(0, n -> n <= 27, n -> n + 3)
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+
+        System.out.println(s1);
     }
 }
