@@ -17,9 +17,14 @@ public class 密封类 {
     }
 
     // 密封的 People 子类。
-    sealed static class Driver extends People {
+    sealed static class Driver extends People permits TruckDriver{
     }
 
     non-sealed static class TruckDriver extends Driver {
     }
+    final static class CarDriver extends TruckDriver {
+    }
+//    无法编译
+//    static non-sealed class CarDriver extends People {
+//    }
 }
