@@ -1,5 +1,6 @@
 package com.nantianba.study.feature.jdk11;
 
+import java.awt.*;
 import java.util.Optional;
 
 public class Optional增强 {
@@ -8,6 +9,11 @@ public class Optional增强 {
         Optional.empty()
                 .ifPresentOrElse(System.out::println,
                         () -> System.out.println("empty"));
+
+        String s1 = Optional.empty()
+                .map(s -> "value")
+                .orElseThrow();
+
 
     }
 }

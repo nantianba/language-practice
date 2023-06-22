@@ -11,5 +11,11 @@ public class InsanceOf增强 {
         } else if (o instanceof Double d) {
             System.out.println(d.intValue());
         }
+
+        if (o instanceof String s && s.length() > 4) {
+            System.out.println(s.length());
+        } else if (o instanceof Double d && d.intValue() > 100) {
+            System.out.println(d.intValue());
+        }
     }
 }

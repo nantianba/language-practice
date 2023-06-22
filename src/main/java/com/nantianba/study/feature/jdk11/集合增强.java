@@ -1,5 +1,6 @@
 package com.nantianba.study.feature.jdk11;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,5 +29,14 @@ public class 集合增强 {
         );
 
         System.out.println(entries);
+
+//不可变
+        var list1 = List.of("Java", "Python", "C");
+        var copy1 = List.copyOf(list1);
+        System.out.println(list1 == copy1); // true
+
+        var list2 = new ArrayList<String>();
+        var copy2 = List.copyOf(list2);
+        System.out.println(list2 == copy2); // false
     }
 }
