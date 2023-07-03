@@ -2,13 +2,13 @@ package com.nantianba.study.feature.jdk11;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HexFormat;
 
 public class 字符串增强 {
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException, UnsupportedEncodingException {
-        String[] charsets = {"UTF-8", "GBK", "GB2312", "ISO-8859-1", "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-32", "UTF-32BE", "UTF-32LE", "US-ASCII", "ASCII", "Unicode", "UnicodeBigUnmarked", "UnicodeLittleUnmarked"};
-        for (String charset : charsets) {
+        for (String charset :  Charset.availableCharsets().keySet()) {
             for (int i = 0; i < 3; i++) {
                 byte[] bytes = "浚\uE0E2氚从呕萸".getBytes();
                 System.out.println(charset + "\t" + new String(Arrays.copyOfRange(bytes,i,bytes.length), charset));
