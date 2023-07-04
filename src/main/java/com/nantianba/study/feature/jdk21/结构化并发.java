@@ -14,9 +14,7 @@ public class 结构化并发 {
             Future<Order> order = scope.fork(结构化并发::fetchOrder);
             scope.join();
             System.out.println(scope);
-            // Join both forks
-            scope.throwIfFailed();  // ... and propagate errors
-            // Here, both forks have succeeded, so compose their results
+            scope.throwIfFailed();
             System.out.println(new Response(user.resultNow(), order.resultNow()));
         } catch (Exception e) {
             e.printStackTrace();

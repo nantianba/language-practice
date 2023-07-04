@@ -21,7 +21,6 @@ public class 大量虚拟线程 {
         Thread.sleep(Duration.ofSeconds(10));
 
 
-
         System.out.println(Thread.activeCount());
 
         long totalledMemory = Runtime.getRuntime().totalMemory();
