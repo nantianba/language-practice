@@ -3,6 +3,7 @@ package com.nantianba.study.thread;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.alibaba.ttl.threadpool.TtlExecutors;
 
+import java.util.Arrays;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
@@ -12,6 +13,9 @@ public class TtlTest {
     private static final ThreadLocal<Long> LOCAL = new TransmittableThreadLocal<>();
 
     public static void main(String[] args) throws InterruptedException {
+//        test0 和 test1 两者的线程包裹不一样 可以观察stack的区别
+        test0();
+        System.out.println("*".repeat(20));
         test1();
         System.out.println("*".repeat(20));
         teset2();
@@ -22,6 +26,25 @@ public class TtlTest {
         System.out.println("*".repeat(20));
         test5();
         System.out.println("*".repeat(20));
+
+        poolSafe3.shutdown();
+        poolSafe4.shutdown();
+    }
+
+    private static void test0() throws InterruptedException {
+        CompletableFuture.runAsync(() -> {
+            A a = new A();
+            LOCAL.set(a.key);
+            log(a.key + " " + LOCAL.get());
+            CompletableFuture.runAsync(() -> {
+                Arrays.stream(Thread.currentThread().getStackTrace()).map(StackTraceElement::toString).forEach(System.out::println);
+                log(a.key + " " + LOCAL.get());
+            }, poolSafe);
+        }, poolSafe);
+
+        Thread.sleep(1000);
+
+        log(LOCAL.get());
     }
 
     private static void test1() throws InterruptedException {
@@ -30,6 +53,7 @@ public class TtlTest {
             LOCAL.set(a.key);
             log(a.key + " " + LOCAL.get());
             CompletableFuture.runAsync(() -> {
+                Arrays.stream(Thread.currentThread().getStackTrace()).map(StackTraceElement::toString).forEach(System.out::println);
                 log(a.key + " " + LOCAL.get());
             });
         });
@@ -107,7 +131,7 @@ public class TtlTest {
                     } else {
                         error(a.key + " " + LOCAL.get() + "\t");
                     }
-                },poolSafe2);
+                }, poolSafe2);
 
             }, poolSafe);
         }
