@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Threads(8)
-@Warmup(iterations = 3, time = 1)
-@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 2, time = 1)
+@Measurement(iterations = 3, time = 1)
 @Fork(1)
 public class Vector向量运算 {
     public static void main(String[] args) throws RunnerException {
@@ -82,9 +82,6 @@ public class Vector向量运算 {
                     .neg();
             vc.intoArray(result, i);
         }
-        for (; i < nums.length; i++) {
-            result[i] = nums[i] * i + nums[i] * nums[i] * (-1);
-        }
         return result;
     }
 
@@ -101,9 +98,6 @@ public class Vector向量运算 {
                     .add(vb.mul(vb))
                     .neg();
             vc.intoArray(result, i);
-        }
-        for (; i < nums.length; i++) {
-            result[i] = nums[i] * i + nums[i] * nums[i] * (-1);
         }
         return result;
     }
@@ -122,9 +116,7 @@ public class Vector向量运算 {
                     .neg();
             vc.intoArray(result, i);
         }
-        for (; i < nums.length; i++) {
-            result[i] = nums[i] * i + nums[i] * nums[i] * (-1);
-        }
+
         return result;
     }
 

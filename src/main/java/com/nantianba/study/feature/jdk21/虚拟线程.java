@@ -14,7 +14,7 @@ public class 虚拟线程 {
         });
 
 // 方式二：Builder模式构建
-        Thread virtualThread2 = Thread.ofVirtual().allowSetThreadLocals(false)
+        Thread virtualThread2 = Thread.ofVirtual()
                 .name("VirtualWorker-", 0)
                 .inheritInheritableThreadLocals(false)
                 .unstarted(() -> {
@@ -24,7 +24,7 @@ public class 虚拟线程 {
         virtualThread2.start();
 
 // 方式三：Factory模式构建
-        ThreadFactory factory = Thread.ofVirtual().allowSetThreadLocals(false)
+        ThreadFactory factory = Thread.ofVirtual()
                 .name("VirtualFactoryWorker-", 0)
                 .inheritInheritableThreadLocals(false)
                 .factory();

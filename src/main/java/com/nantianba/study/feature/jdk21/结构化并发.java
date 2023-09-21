@@ -1,23 +1,21 @@
 package com.nantianba.study.feature.jdk21;
 
-import jdk.incubator.concurrent.StructuredTaskScope;
-
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.StructuredTaskScope;
 
 public class 结构化并发 {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 //        捕获第一个异常并关闭任务范围以中断未完成的线程
         var scope = new StructuredTaskScope.ShutdownOnFailure();
         try (scope) {
-            Future<User> user = scope.fork(结构化并发::findUser);
-            Future<Order> order = scope.fork(结构化并发::fetchOrder);
+            StructuredTaskScope.Subtask<User> user = scope.fork(结构化并发::findUser);
+            StructuredTaskScope.Subtask<Order> order = scope.fork(结构化并发::fetchOrder);
             scope.join();
             System.out.println(scope);
             scope.throwIfFailed();
-            System.out.println(new Response(user.resultNow(), order.resultNow()));
+            System.out.println(new Response(user.get(), order.get()));
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
 
         //捕获第一个结果并关闭任务范围以中断未完成的线程

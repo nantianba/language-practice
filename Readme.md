@@ -1,7 +1,7 @@
-* JDK20时的运行vm参数
+* JDK21时的运行vm参数
 ```
---enable-preview --add-modules=jdk.incubator.concurrent
 ```
+--add-modules=jdk.incubator.vector
 
 * TTL配置
 ```
