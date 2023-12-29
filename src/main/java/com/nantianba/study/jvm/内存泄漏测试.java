@@ -27,14 +27,13 @@ public class 内存泄漏测试 {
         //600M
         System.out.println("当前已使用内存：" + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024 + "M");
 
-        Thread.sleep(2000);
         System.gc();
         System.gc();
         System.gc();
         System.gc();
         System.out.println("gc");
 
-        Thread.sleep(20000);
+        Thread.sleep(2000);
         //看内存泄漏的情况
 
         //打印当前已使用内存
