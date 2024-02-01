@@ -39,6 +39,19 @@ public class 内存泄漏测试 {
         //打印当前已使用内存
         // 400M
         System.out.println("当前已使用内存：" + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024 + "M");
+        Object o2 = 0;
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+        System.out.println("gc");
+
+        Thread.sleep(2000);
+        //看内存泄漏的情况
+
+        //打印当前已使用内存
+        //
+        System.out.println("当前已使用内存：" + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024 + "M");
     }
 
     public static class Outer {
