@@ -19,7 +19,7 @@ public class String增强 {
         System.out.println(s);
         System.out.println(t);
 
-        String info = $."My name is \{name}";//JDK21
+        String info = STR."My name is \{name}";//JDK21
         System.out.println(info);
 
 // Embedded expressions can be strings

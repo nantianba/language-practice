@@ -34,23 +34,18 @@ public class 虚拟线程死锁 {
         // VT 2..CPUs+1
         for (int i = 0; i < CPUs; i++) {
             Runnable runnable1 = () -> {
-                lockT.lock();
-                lockB.lock();
-                lockB.unlock();
-                try {
-                    Thread.sleep(100000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+//                lockT.lock();
+//                lockB.lock();
+//                lockB.unlock();
+//                System.out.println("Exiting synchronized block");
+//                latch.countDown();
+//                lockT.unlock();
+                synchronized (虚拟线程死锁.class) {
+                    lockB.lock();
+                    lockB.unlock();
+                    System.out.println("Exiting synchronized block");
+                    latch.countDown();
                 }
-                System.out.println("Exiting synchronized block");
-                latch.countDown();
-                lockT.unlock();
-//                synchronized (虚拟线程死锁.class) {
-//                    lockB.lock();
-//                    lockB.unlock();
-//                    System.out.println("Exiting synchronized block");
-//                    latch.countDown();
-//                }
             };
             async(runnable1, vt);
         }
