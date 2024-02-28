@@ -31,7 +31,7 @@ public class 虚拟线程死锁 {
 
         System.out.println("Starting pinned virtual threads");
 
-        // VT 2..CPUs+1
+        // VT 2..CPUs
         for (int i = 0; i < CPUs; i++) {
             Runnable runnable1 = () -> {
 //                lockT.lock();
