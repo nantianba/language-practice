@@ -44,11 +44,11 @@ public class 虚拟线程死锁 {
 //                lockT.unlock();
                 synchronized (lock) {
                     System.out.println("Entering synchronized block");
-//                    try {
-//                        lock.wait(100);
-//                    } catch (InterruptedException e) {
-//                        throw new RuntimeException(e);
-//                    }
+                    try {
+                        lock.wait(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     lockB.lock();
                     lockB.unlock();
                     System.out.println("Exiting synchronized block");
