@@ -10,6 +10,7 @@ public class 虚拟线程死锁 {
 
     private static final int CPUs = Runtime.getRuntime().availableProcessors();
     private static final CountDownLatch latch = new CountDownLatch(CPUs);
+    private static final Object lock = new Object();
 
     /**
      * Continuation栈存在native方法调用、外部函数调用或者当持有监视器或者等待监视器的时候，虚拟线程会Pin到平台线程，导致虚拟线程无法从平台线程卸载
@@ -27,6 +28,7 @@ public class 虚拟线程死锁 {
         };
         async(runnable, vt);
 
+
         Thread.sleep(1000);
 
         System.out.println("Starting pinned virtual threads");
@@ -40,7 +42,13 @@ public class 虚拟线程死锁 {
 //                System.out.println("Exiting synchronized block");
 //                latch.countDown();
 //                lockT.unlock();
-                synchronized (虚拟线程死锁.class) {
+                synchronized (lock) {
+                    System.out.println("Entering synchronized block");
+//                    try {
+//                        lock.wait(100);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
                     lockB.lock();
                     lockB.unlock();
                     System.out.println("Exiting synchronized block");
@@ -54,11 +62,13 @@ public class 虚拟线程死锁 {
         lockA.unlock();
         System.out.println("Unlocked lockA");
         latch.await();
+
+        System.out.println("All threads have completed");
     }
 
     private static void async(Runnable runnable1, boolean vt) {
         if (vt) {
-            Thread.startVirtualThread(runnable1);
+            Thread.ofVirtual().start(runnable1);
         } else {
             new Thread(runnable1).start();
         }
