@@ -8,7 +8,7 @@ public class 虚拟线程死锁 {
     private static final ReentrantLock lockB = new ReentrantLock();
     private static final ReentrantLock lockT = new ReentrantLock();
 
-    private static final int CPUs = Runtime.getRuntime().availableProcessors();
+    private static final int CPUs = Runtime.getRuntime().availableProcessors() + 10000;
     private static final CountDownLatch latch = new CountDownLatch(CPUs);
     private static final Object lock = new Object();
 
@@ -23,6 +23,11 @@ public class 虚拟线程死锁 {
         Runnable runnable = () -> {
             lockB.lock();
             lockA.lock();
+            try {
+                Thread.sleep(100000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             lockA.unlock();
             lockB.unlock();
         };
