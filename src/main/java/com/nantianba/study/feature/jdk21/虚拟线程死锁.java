@@ -100,6 +100,8 @@ public class 虚拟线程死锁 {
 
         Thread.sleep(40000);
 
+        System.out.println("40s later");
+
         for (Thread thread : Thread.getAllStackTraces().keySet()) {
             System.out.println(thread.getName());
         }
