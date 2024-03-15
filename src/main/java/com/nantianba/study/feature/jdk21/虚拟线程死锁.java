@@ -86,13 +86,19 @@ public class 虚拟线程死锁 {
         int i = 2;
         while (!latch.await(1, TimeUnit.SECONDS)) {
             System.out.println("blocking...");
-//            semaphore.release();
+            semaphore.release();
 
             for (Thread thread : vts) {
                 System.out.println(thread);
             }
         }
         System.out.println("All threads have completed");
+
+        for (Thread thread : Thread.getAllStackTraces().keySet()) {
+            System.out.println(thread.getName());
+        }
+
+        Thread.sleep(40000);
 
         for (Thread thread : Thread.getAllStackTraces().keySet()) {
             System.out.println(thread.getName());
