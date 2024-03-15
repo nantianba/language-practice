@@ -40,8 +40,8 @@ public class 死锁2 {
                         }
                     }
                     try {
-                        死锁2.class.wait(10);
-//                        Thread.sleep(10);
+//                        死锁2.class.wait(10);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                     }
                 }
