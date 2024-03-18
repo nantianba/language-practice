@@ -19,7 +19,6 @@ public class 死锁2 {
             int finalI1 = i;
             Thread thread = Thread.startVirtualThread(() -> {
                 synchronized (死锁2.class) {
-                    System.out.println("enter");
                     queue.poll();
 
                     try {
@@ -40,8 +39,8 @@ public class 死锁2 {
                         }
                     }
                     try {
-//                        死锁2.class.wait(10);
-                        Thread.sleep(10);
+                        死锁2.class.wait(0,1);
+//                        Thread.sleep(0, 1);
                     } catch (InterruptedException e) {
                     }
                 }

@@ -2,6 +2,7 @@ package com.nantianba.study.feature.jdk21;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -12,12 +13,11 @@ public class 虚拟线程死锁 {
     private static final ReentrantLock lockB = new ReentrantLock();
     private static final ReentrantLock lockT = new ReentrantLock();
 
-    private static final int CPUs = Runtime.getRuntime().availableProcessors();
+    private static final int CPUs = Runtime.getRuntime().availableProcessors() + 40;
     private static final CountDownLatch latch = new CountDownLatch(CPUs);
     private static final Object lock = new Object();
+    static DeadlockFixer deadlockFixer = new DeadlockFixer();
 
-    private static final Object one = new Object();
-    private static final Semaphore semaphore = new Semaphore(0);
 
     /**
      * Continuation栈存在native方法调用、外部函数调用或者当持有监视器或者等待监视器的时候，虚拟线程会Pin到平台线程，导致虚拟线程无法从平台线程卸载
@@ -25,20 +25,7 @@ public class 虚拟线程死锁 {
     public static void main(String[] args) throws Exception {
         boolean vt = true;
 
-        async(() -> {
-            synchronized (one) {
-                while (true) {
-                    try {
-                        semaphore.acquire();
-
-                        System.out.println("test compensate");
-
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }, vt);
+        deadlockFixer.init();
 
         lockA.lock();
         // VT 1
@@ -84,27 +71,28 @@ public class 虚拟线程死锁 {
         lockA.unlock();
         System.out.println("Unlocked lockA");
         int i = 2;
-        while (!latch.await(1, TimeUnit.SECONDS)) {
-            System.out.println("blocking...");
-            semaphore.release();
-
-            for (Thread thread : vts) {
-                System.out.println(thread);
-            }
+        while (!latch.await(10, TimeUnit.MILLISECONDS)) {
+            deadlockFixer.tryCompensateWorker();
         }
         System.out.println("All threads have completed");
-
-        for (Thread thread : Thread.getAllStackTraces().keySet()) {
-            System.out.println(thread.getName());
-        }
+        Set<Thread> threads1 = Thread.getAllStackTraces().keySet();
+        System.out.println(threads1.size());
 
         Thread.sleep(40000);
 
         System.out.println("40s later");
+        Set<Thread> threads2 = Thread.getAllStackTraces().keySet();
+        System.out.println(threads2.size());
 
-        for (Thread thread : Thread.getAllStackTraces().keySet()) {
-            System.out.println(thread.getName());
-        }
+        Thread.sleep(1000);
+        System.out.println("*********");
+
+        Set<Thread> threads3 = Thread.getAllStackTraces().keySet();
+        System.out.println(threads3.size());
+
+        System.out.println(threads1.removeAll(threads3));
+        System.out.println(threads1);
+
     }
 
     static List<Thread> vts = new LinkedList<>();
@@ -116,5 +104,47 @@ public class 虚拟线程死锁 {
         } else {
             new Thread(runnable1).start();
         }
+    }
+
+    private static class DeadlockFixer {
+
+        private final Object pinCarrier = new Object();
+        private final Semaphore semaphore = new Semaphore(0);
+
+
+        public void init() {
+            String pa = System.getProperty("jdk.virtualThreadScheduler.parallelism");
+            if (pa != null) {
+                System.setProperty("jdk.virtualThreadScheduler.parallelism", String.valueOf(Integer.parseInt(pa) + 1));
+                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Integer.parseInt(pa) * 4));
+//                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Integer.parseInt(pa)));
+            } else {
+                System.setProperty("jdk.virtualThreadScheduler.parallelism", String.valueOf(Runtime.getRuntime().availableProcessors() + 1));
+                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Runtime.getRuntime().availableProcessors() * 4));
+//                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Runtime.getRuntime().availableProcessors()));
+            }
+            Thread.startVirtualThread(() -> {
+                //始终占据一个Carrier线程
+                synchronized (pinCarrier) {
+                    while (true) {
+                        try {
+                            semaphore.acquire();
+
+                            //需要和VM参数配合，
+                            pinCarrier.wait(0, 1);
+                        } catch (InterruptedException e) {
+
+                        }
+                    }
+                }
+            });
+        }
+
+        public void tryCompensateWorker() {
+            if (semaphore.hasQueuedThreads()) {
+                semaphore.release();
+            }
+        }
+
     }
 }
