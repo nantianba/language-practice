@@ -23,7 +23,6 @@ public class 父子类静态字段 {
         System.out.println("*******************");
         System.out.println(Parent.getNameP());
         System.out.println(Child.getNameP());
-
     }
 
     static class Parent {
@@ -33,6 +32,9 @@ public class 父子类静态字段 {
         public static String getNameP() {
             return name;
         }
+        public void name(){
+            System.out.println("parent");
+        }
     }
 
     static class Child extends Parent {
@@ -40,6 +42,10 @@ public class 父子类静态字段 {
 
         public static String getNameP() {
             return name;
+        }
+
+        public void name(){
+            System.out.println("child");
         }
     }
 }
