@@ -1,19 +1,20 @@
 package com.nantianba.study.feature.jdk21;
 
-import java.util.LinkedList;
-import java.util.List;
+
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 public class 虚拟线程死锁 {
     private static final ReentrantLock lockA = new ReentrantLock();
     private static final ReentrantLock lockB = new ReentrantLock();
     private static final ReentrantLock lockT = new ReentrantLock();
 
-    private static final int CPUs = Runtime.getRuntime().availableProcessors() + 40;
+    private static final int CPUs = Runtime.getRuntime().availableProcessors()*5;
     private static final CountDownLatch latch = new CountDownLatch(CPUs);
     private static final Object lock = new Object();
     static DeadlockFixer deadlockFixer = new DeadlockFixer();
@@ -72,11 +73,14 @@ public class 虚拟线程死锁 {
         System.out.println("Unlocked lockA");
         int i = 2;
         while (!latch.await(10, TimeUnit.MILLISECONDS)) {
+            System.out.println("Deadlock detected");
             deadlockFixer.tryCompensateWorker();
         }
         System.out.println("All threads have completed");
         Set<Thread> threads1 = Thread.getAllStackTraces().keySet();
         System.out.println(threads1.size());
+        System.out.println("************");
+        System.out.println(Thread.getAllStackTraces().keySet().stream().map(Thread::getName).filter(name -> name.contains("Fork")).sorted().collect(Collectors.joining("\n")));
 
         Thread.sleep(40000);
 
@@ -93,14 +97,12 @@ public class 虚拟线程死锁 {
         System.out.println(threads1.removeAll(threads3));
         System.out.println(threads1);
 
+        System.out.println();
     }
-
-    static List<Thread> vts = new LinkedList<>();
 
     private static void async(Runnable runnable1, boolean vt) {
         if (vt) {
-            Thread thread = Thread.ofVirtual().start(runnable1);
-            vts.add(thread);
+            自定义虚拟线程Carrier.startVirtualThread(runnable1);
         } else {
             new Thread(runnable1).start();
         }
@@ -115,23 +117,28 @@ public class 虚拟线程死锁 {
         public void init() {
             String pa = System.getProperty("jdk.virtualThreadScheduler.parallelism");
             if (pa != null) {
-                System.setProperty("jdk.virtualThreadScheduler.parallelism", String.valueOf(Integer.parseInt(pa) + 1));
-                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Integer.parseInt(pa) * 4));
+//                System.setProperty("jdk.virtualThreadScheduler.parallelism", String.valueOf(Integer.parseInt(pa) + 1));
+//                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Integer.parseInt(pa) + 1));
+                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(256));
 //                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Integer.parseInt(pa)));
             } else {
-                System.setProperty("jdk.virtualThreadScheduler.parallelism", String.valueOf(Runtime.getRuntime().availableProcessors() + 1));
-                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Runtime.getRuntime().availableProcessors() * 4));
+//                System.setProperty("jdk.virtualThreadScheduler.parallelism", String.valueOf(Runtime.getRuntime().availableProcessors() + 1));
+//                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Runtime.getRuntime().availableProcessors() + 1));
+                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(256));
 //                System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(Runtime.getRuntime().availableProcessors()));
             }
-            Thread.startVirtualThread(() -> {
+            AtomicInteger i = new AtomicInteger();
+            自定义虚拟线程Carrier.startVirtualThread(() -> {
                 //始终占据一个Carrier线程
                 synchronized (pinCarrier) {
                     while (true) {
                         try {
                             semaphore.acquire();
 
+                            i.incrementAndGet();
                             //需要和VM参数配合，
-                            pinCarrier.wait(0, 1);
+//                            pinCarrier.wait(0, 1);
+                            System.out.println("try saving deadlock");
                         } catch (InterruptedException e) {
 
                         }

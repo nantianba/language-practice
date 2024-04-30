@@ -6,6 +6,8 @@ import java.util.Locale;
 
 public class 大量虚拟线程 {
     public static void main(String[] args) throws InterruptedException {
+        System.setProperty("jdk.virtualThreadScheduler.minRunnable", String.valueOf(256));
+
         for (int i = 0; i < 100000; i++) {
             Thread.startVirtualThread(() -> {
                 try {
@@ -31,5 +33,7 @@ public class 大量虚拟线程 {
         System.out.println(freeMemory);
 
         Thread.sleep(Duration.ofMinutes(10));
+
+        System.out.println(Thread.getAllStackTraces().keySet().size());
     }
 }
