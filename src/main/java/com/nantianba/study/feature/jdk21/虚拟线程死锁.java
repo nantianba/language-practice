@@ -24,9 +24,12 @@ public class 虚拟线程死锁 {
      * Continuation栈存在native方法调用、外部函数调用或者当持有监视器或者等待监视器的时候，虚拟线程会Pin到平台线程，导致虚拟线程无法从平台线程卸载
      */
     public static void main(String[] args) throws Exception {
+        //打印jvm版本
+        System.out.println(System.getProperty("java.version"));
+
         boolean vt = true;
 
-        deadlockFixer.init();
+//        deadlockFixer.init();
 
         lockA.lock();
         // VT 1
@@ -102,7 +105,8 @@ public class 虚拟线程死锁 {
 
     private static void async(Runnable runnable1, boolean vt) {
         if (vt) {
-            自定义虚拟线程Carrier.startVirtualThread(runnable1);
+//            自定义虚拟线程Carrier.startVirtualThread(runnable1);
+            Thread.startVirtualThread(runnable1);
         } else {
             new Thread(runnable1).start();
         }
