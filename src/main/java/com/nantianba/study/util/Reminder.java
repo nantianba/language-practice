@@ -1,19 +1,23 @@
 package com.nantianba.study.util;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.Calendar;
 import java.util.Date;
+import static java.util.FormatProcessor.FMT;
 
 public class Reminder {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, AWTException {
         Calendar calendar = Calendar.getInstance();
 //        calendar.set(Calendar.HOUR_OF_DAY, 9);
 //        calendar.set(Calendar.MINUTE, 59);
 //        calendar.set(Calendar.SECOND, 0);
 
-        calendar.set(Calendar.HOUR_OF_DAY, 14);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 50);
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 59);
+
+        calendar.set(Calendar.SECOND, 0);
         Date reminderTime = calendar.getTime();
 
         while (true) {
@@ -23,8 +27,14 @@ public class Reminder {
             }
 
             Thread.sleep(1000);
-            System.out.println(STR."当前时间：\{now}，提醒时间：\{reminderTime}");
+            System.out.println(FMT."提醒时间:%tT\{reminderTime},还有\{convertToText((reminderTime.getTime() - now.getTime()))}");
         }
+
+        Robot robot = new Robot();
+        robot.keyPress(KeyEvent.VK_WINDOWS);
+        robot.keyPress(KeyEvent.VK_D);
+        robot.keyRelease(KeyEvent.VK_D);
+        robot.keyRelease(KeyEvent.VK_WINDOWS);
 
         // 创建一个 JFrame 对象
         JFrame frame = new JFrame("提醒时间快到了");
@@ -44,6 +54,33 @@ public class Reminder {
 
         // 显示窗口
         frame.setVisible(true);
+    }
+
+    /**
+     * **秒
+     * **分**秒
+     * **小时**分**秒
+     * **天**小时**分**秒
+     */
+    private static String convertToText(long l) {
+        long day = l / (24 * 60 * 60 * 1000);
+        long hour = (l % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000);
+        long minute = (l % (60 * 60 * 1000)) / (60 * 1000);
+        long second = (l % (60 * 1000)) / 1000;
+
+        StringBuilder sb = new StringBuilder();
+        if (day > 0) {
+            sb.append(day).append("天");
+        }
+        if (hour > 0) {
+            sb.append(hour).append("小时");
+        }
+        if (minute > 0) {
+            sb.append(minute).append("分");
+        }
+        sb.append(second).append("秒");
+
+        return sb.toString();
     }
 
 }
