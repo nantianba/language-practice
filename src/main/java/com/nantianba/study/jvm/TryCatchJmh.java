@@ -17,13 +17,23 @@ import java.util.concurrent.TimeUnit;
 @Fork(1)
 @Threads(2)
 public class TryCatchJmh {
+    public static void main(String[] args) throws Exception {
+        Options opts = new OptionsBuilder()
+                .include("TryCatchJmh")
+                .build();
+        new Runner(opts).run();
+    }
+
     @Benchmark
-    public long shift() {
+    public long shift(Blackhole blackhole) {
         long t = 455565655225562L;
         long a = 0;
         for (int i = 0; i < 1000; i++) {
             a = t >> 30;
         }
+
+        blackhole.consume(a);
+
         return a;
     }
 
@@ -40,6 +50,31 @@ public class TryCatchJmh {
             return a;
         } catch (Throwable e) {
             blackhole.consume(e);
+            return 0;
+        }
+    }
+
+    @Benchmark
+    public long shift2() {
+        long t = 455565655225562L;
+        long a = 0;
+        for (int i = 0; i < 1000; i++) {
+            a = t >> 30;
+        }
+        return a;
+    }
+
+    @Benchmark
+    public long shiftTryCatch2() {
+        try {
+            long t = 455565655225562L;
+            long a = 0;
+            for (int i = 0; i < 1000; i++) {
+                a = t >> 30;
+            }
+
+            return a;
+        } catch (Throwable e) {
             return 0;
         }
     }
@@ -72,13 +107,6 @@ public class TryCatchJmh {
             blackhole.consume(e);
             return 0;
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        Options opts = new OptionsBuilder()
-                .include("TryCatchJmh")
-                .build();
-        new Runner(opts).run();
     }
 
 
