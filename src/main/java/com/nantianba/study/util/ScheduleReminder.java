@@ -44,6 +44,7 @@ public class ScheduleReminder {
 
                 // 设置窗口总是在当前所有窗口之前显示
                 frame.setAlwaysOnTop(true);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
                 // 显示窗口
                 frame.setVisible(true);
