@@ -6,11 +6,14 @@ import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TreeSet;
 
 public class ScheduleReminder {
     public static void main(String[] args) throws InterruptedException, AWTException {
         String[] checkPoint = {"09:00", "09:30", "10:15", "11:00", "11:45",
                 "13:30", "14:15", "15:00", "15:45", "16:30", "17:30", "18:00"};
+
+        TreeSet<String> set = Arrays.stream(checkPoint).map(t -> STR."\{t}:00").collect(TreeSet::new, TreeSet::add, TreeSet::addAll);
 
         while (true) {
             Date now = new Date();
@@ -19,10 +22,8 @@ public class ScheduleReminder {
             dateFormat.setLenient(false);
 
             String format = dateFormat.format(now);
-            System.out.println(format);
 
-            if (Arrays.stream(checkPoint).anyMatch(t -> (STR."\{t}:00").equals(format))) {
-                System.out.println("Time to take a break");
+            if (set.contains(format)) {
                 Robot robot = new Robot();
                 robot.keyPress(KeyEvent.VK_WINDOWS);
                 robot.keyPress(KeyEvent.VK_D);
@@ -48,6 +49,12 @@ public class ScheduleReminder {
 
                 // 显示窗口
                 frame.setVisible(true);
+            } else {
+                //下一次提醒时间
+                String ceiling = set.ceiling(format);
+                if (ceiling != null) {
+                    System.out.println(STR."下一次提醒时间:\{ceiling}");
+                }
             }
 
             Thread.sleep(1000);
