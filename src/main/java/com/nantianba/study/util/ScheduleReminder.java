@@ -3,6 +3,7 @@ package com.nantianba.study.util;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -15,7 +16,11 @@ public class ScheduleReminder {
 
         TreeSet<String> set = Arrays.stream(checkPoint).map(t -> STR."\{t}:00").collect(TreeSet::new, TreeSet::add, TreeSet::addAll);
 
+        String deskDir = args[0];
+        String lastHint = "";
+
         while (true) {
+            tryDeleteLnkFile(deskDir);
             Date now = new Date();
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -52,12 +57,26 @@ public class ScheduleReminder {
             } else {
                 //下一次提醒时间
                 String ceiling = set.ceiling(format);
-                if (ceiling != null) {
+                if (ceiling != null && !lastHint.equals(ceiling)) {
                     System.out.println(STR."下一次提醒时间:\{ceiling}");
+                    lastHint = ceiling;
                 }
             }
 
             Thread.sleep(1000);
+        }
+    }
+
+    private static void tryDeleteLnkFile(String deskDir) {
+        String[] files = new File(deskDir)
+                .list((dir, name) -> name.endsWith(".lnk"));
+        if (files != null) {
+            for (String file : files) {
+                boolean delete = new File(deskDir, file).delete();
+                if (delete) {
+                    System.out.println(STR."删除快捷方式:\{file}");
+                }
+            }
         }
     }
 
