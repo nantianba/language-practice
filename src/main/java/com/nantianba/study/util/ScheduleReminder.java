@@ -29,31 +29,7 @@ public class ScheduleReminder {
             String format = dateFormat.format(now);
 
             if (set.contains(format)) {
-                Robot robot = new Robot();
-                robot.keyPress(KeyEvent.VK_WINDOWS);
-                robot.keyPress(KeyEvent.VK_D);
-                robot.keyRelease(KeyEvent.VK_D);
-                robot.keyRelease(KeyEvent.VK_WINDOWS);
-
-                // 创建一个 JFrame 对象
-                JFrame frame = new JFrame("提醒时间到了");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(300, 200);
-                //屏幕居中
-                frame.setLocationRelativeTo(null);
-                //设置窗口内容为：请打开手机
-                JLabel label = new JLabel("CLOSE");
-                //label 居中
-                label.setHorizontalAlignment(SwingConstants.CENTER);
-
-                frame.add(label);
-
-                // 设置窗口总是在当前所有窗口之前显示
-                frame.setAlwaysOnTop(true);
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-                // 显示窗口
-                frame.setVisible(true);
+                show();
             } else {
                 //下一次提醒时间
                 String ceiling = set.ceiling(format);
@@ -65,6 +41,34 @@ public class ScheduleReminder {
 
             Thread.sleep(1000);
         }
+    }
+
+    private static void show() throws AWTException {
+        Robot robot = new Robot();
+        robot.keyPress(KeyEvent.VK_WINDOWS);
+        robot.keyPress(KeyEvent.VK_D);
+        robot.keyRelease(KeyEvent.VK_D);
+        robot.keyRelease(KeyEvent.VK_WINDOWS);
+
+        // 创建一个 JFrame 对象
+        JFrame frame = new JFrame("提醒时间到了");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 200);
+        //屏幕居中
+        frame.setLocationRelativeTo(null);
+        //设置窗口内容为：请打开手机
+        JLabel label = new JLabel("CLOSE");
+        //label 居中
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+
+        frame.add(label);
+
+        // 设置窗口总是在当前所有窗口之前显示
+        frame.setAlwaysOnTop(true);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // 显示窗口
+        frame.setVisible(true);
     }
 
     private static void tryDeleteLnkFile(String deskDir) {
@@ -79,5 +83,4 @@ public class ScheduleReminder {
             }
         }
     }
-
 }
