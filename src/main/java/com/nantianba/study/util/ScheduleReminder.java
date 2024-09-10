@@ -73,7 +73,7 @@ public class ScheduleReminder {
 
     private static void tryDeleteLnkFile(String deskDir) {
         String[] files = new File(deskDir)
-                .list((dir, name) -> name.endsWith(".lnk"));
+                .list((_, name) -> name.endsWith(".lnk"));
         if (files != null) {
             for (String file : files) {
                 boolean delete = new File(deskDir, file).delete();

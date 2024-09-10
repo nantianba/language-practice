@@ -14,8 +14,8 @@ public class Reminder {
 //        calendar.set(Calendar.MINUTE, 59);
 //        calendar.set(Calendar.SECOND, 0);
 
-        calendar.set(Calendar.HOUR_OF_DAY, 9);
-        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.MINUTE, 20);
 
         calendar.set(Calendar.SECOND, 0);
         Date reminderTime = calendar.getTime();
