@@ -30,13 +30,13 @@ public class 控制台输出样式 {
         System.out.println("\033[1;36m青/蓝绿\033[0m");
         System.out.println("\033[1;37m白\033[0m");
 
-        System.out.println("\033[40;37m 黑底白字\033[0m");
-        System.out.println("\033[41;37m 紅底白字\033[0m");
-        System.out.println("\033[42;37m 綠底白字\033[0m");
-        System.out.println("\033[43;37m 黃底白字\033[0m");
-        System.out.println("\033[44;37m 藍底白字\033[0m");
-        System.out.println("\033[45;37m 紫底白字\033[0m");
-        System.out.println("\033[46;37m 天藍底白字\033[0m");
-        System.out.println("\033[47;30m 白底黑字\033[0m");
+        System.out.println("\033[40;37;1m黑底白字\033[0m");
+        System.out.println("\033[41;37;1m紅底白字\033[0m");
+        System.out.println("\033[42;37;1m綠底白字\033[0m");
+        System.out.println("\033[43;37;1m黃底白字\033[0m");
+        System.out.println("\033[44;37;1m藍底白字\033[0m");
+        System.out.println("\033[45;37;1m紫底白字\033[0m");
+        System.out.println("\033[46;37;1m天藍底白字\033[0m");
+        System.out.println("\033[47;30;1m白底黑字\033[0m");
     }
 }
