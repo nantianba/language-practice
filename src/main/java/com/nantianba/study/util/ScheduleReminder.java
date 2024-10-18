@@ -76,10 +76,7 @@ public class ScheduleReminder {
                 .list((_, name) -> name.endsWith(".lnk"));
         if (files != null) {
             for (String file : files) {
-                boolean delete = new File(deskDir, file).delete();
-                if (delete) {
-                    System.out.println(STR."删除快捷方式:\{file}");
-                }
+                new File(deskDir, file).delete();
             }
         }
     }
