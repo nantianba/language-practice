@@ -73,7 +73,7 @@ public class ScheduleReminder {
         //1min后自动关闭窗口
         new Thread(() -> {
             try {
-                Thread.sleep(6000);
+                Thread.sleep(60000);
                 if (frame.isShowing()) {
                     frame.dispose();
                 }
