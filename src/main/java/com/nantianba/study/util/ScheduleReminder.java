@@ -69,6 +69,17 @@ public class ScheduleReminder {
 
         // 显示窗口
         frame.setVisible(true);
+
+        //1min后自动关闭窗口
+        new Thread(() -> {
+            try {
+                Thread.sleep(6000);
+                if (frame.isShowing()) {
+                    frame.dispose();
+                }
+            } catch (Exception _) {
+            }
+        }).start();
     }
 
     private static void tryDeleteLnkFile(String deskDir) {
