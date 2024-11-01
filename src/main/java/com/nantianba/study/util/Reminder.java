@@ -3,21 +3,18 @@ package com.nantianba.study.util;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
 import static java.util.FormatProcessor.FMT;
 
 public class Reminder {
-    public static void main(String[] args) throws InterruptedException, AWTException {
-        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.HOUR_OF_DAY, 9);
-//        calendar.set(Calendar.MINUTE, 59);
-//        calendar.set(Calendar.SECOND, 0);
+    public static void main(String[] args) throws InterruptedException, AWTException, ParseException {
+        Calendar calendar = parse("yyyy-MM-dd HH:mm:ss", "2024-11-01 09:58:00");
 
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 20);
-
-        calendar.set(Calendar.SECOND, 0);
         Date reminderTime = calendar.getTime();
 
         while (true) {
@@ -54,6 +51,22 @@ public class Reminder {
 
         // 显示窗口
         frame.setVisible(true);
+    }
+
+    private static Calendar parse(String format, String dateStr) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault(Locale.Category.FORMAT));
+        //2020-04-30 启用严格格式匹配，避免 2020-05-01->(yyyyMMdd)->2019-12-05这种情况出现
+        dateFormat.setLenient(false);
+
+        try {
+            Date date = dateFormat.parse(dateStr);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+
+            return calendar;
+        } catch (Exception e) {
+            throw new RuntimeException("日期格式错误");
+        }
     }
 
     /**
