@@ -170,8 +170,8 @@ public class VirtualThreads {
                                                 return;
                                             }
 
-                                            String content = "当前pool状态" + vtPoolRef + "<br>" +
-                                                             "是否解决:" + (fixed ? "success" : "fail") + "<br>";
+                                            String content = "当前pool状态" + vtPoolRef + "\n" +
+                                                             "是否解决:" + (fixed ? "success" : "fail") + "\n";
 
                                             System.out.println("DeadLockFixer:解決情況 " + content);
                                         } catch (Throwable e) {
