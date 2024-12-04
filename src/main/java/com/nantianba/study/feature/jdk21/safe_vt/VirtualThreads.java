@@ -128,7 +128,7 @@ public class VirtualThreads {
                                             .filter(stackTraceElements -> stackTraceElements.getName().contains("ForkJoinPool-"))
                                             .map(VirtualThreads::parseVtInstance)
                                             .filter(Objects::nonNull)
-                                            .map(t -> t.getName() + "\t" + t.getState() + ":\n"
+                                            .map(t -> t.getName() + "\t" + t.threadId() + "\t" + t.getState() + ":\n"
                                                       + Arrays.stream(t.getStackTrace()).map(stackTraceElement -> "\t" + stackTraceElement)
                                                               .collect(Collectors.joining("\n")))
                                             .collect(Collectors.joining("\n\n"));

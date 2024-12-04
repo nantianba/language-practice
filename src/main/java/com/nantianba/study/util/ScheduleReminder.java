@@ -29,7 +29,7 @@ public class ScheduleReminder {
             String format = dateFormat.format(now);
 
             if (set.contains(format)) {
-                show();
+                show("提醒时间到了");
             } else {
                 //下一次提醒时间
                 String ceiling = set.ceiling(format);
@@ -43,7 +43,7 @@ public class ScheduleReminder {
         }
     }
 
-    private static void show() throws AWTException {
+    private static void show(String content) throws AWTException {
         Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_WINDOWS);
         robot.keyPress(KeyEvent.VK_D);
@@ -51,7 +51,7 @@ public class ScheduleReminder {
         robot.keyRelease(KeyEvent.VK_WINDOWS);
 
         // 创建一个 JFrame 对象
-        JFrame frame = new JFrame("提醒时间到了");
+        JFrame frame = new JFrame(content);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 200);
         //屏幕居中

@@ -55,7 +55,7 @@ public class Reminder {
 
     private static Calendar parse(String format, String dateStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault(Locale.Category.FORMAT));
-        //2020-04-30 启用严格格式匹配，避免 2020-05-01->(yyyyMMdd)->2019-12-05这种情况出现
+        //启用严格格式匹配，避免 2020-05-01->(yyyyMMdd)->2019-12-05这种情况出现
         dateFormat.setLenient(false);
 
         try {

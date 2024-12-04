@@ -13,7 +13,7 @@ public class 虚拟线程死锁 {
     private static final ReentrantLock lockB = new ReentrantLock();
     private static final ReentrantLock lockT = new ReentrantLock();
 
-    private static final int CPUs = Runtime.getRuntime().availableProcessors()*5;
+    private static final int CPUs = Runtime.getRuntime().availableProcessors() * 5;
     private static final CountDownLatch latch = new CountDownLatch(CPUs);
     private static final Object lock = new Object();
 
@@ -32,6 +32,8 @@ public class 虚拟线程死锁 {
         lockA.lock();
         // VT 1
         Runnable runnable = () -> {
+            Thread.currentThread().setName("VT-1");
+
             lockB.lock();
             lockA.lock();
             lockA.unlock();
@@ -46,7 +48,11 @@ public class 虚拟线程死锁 {
 
         // VT 2..CPUs
         for (int i = 0; i < CPUs; i++) {
+            int finalI = i;
             Runnable runnable1 = () -> {
+
+                Thread.currentThread().setName("VT-2-" + finalI);
+
 //                lockT.lock();
 //                lockB.lock();
 //                lockB.unlock();
